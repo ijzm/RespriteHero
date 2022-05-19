@@ -44,5 +44,5 @@ This project is licensed under the GPL-3.0 License - see the LICENSE file for de
 
 * LightPunch#8664 for the project name.
 * The Backpack Hero Team for creating an awesome game.
-* The Unofficial Backpack Hero Modding Discord for helping stablishing a modding community.
+* The Unofficial Backpack Hero Modding Discord for helping establishing a modding community.
 
