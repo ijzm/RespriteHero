@@ -19,7 +19,7 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 ### Creating Textures
 
 * Create a png file inside your TexturePack folder with the name of the item you want to change.
-* You can see some examples on the [TexturePack] folder.
+* You can see some examples on the [TexturePack](/TexturePack) folder.
 
 ## Authors
 
