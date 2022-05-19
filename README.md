@@ -16,6 +16,11 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 * Create a TexturePack folder in your game root folder.
 * Add any texture you want to the TexturePack folder!
 
+### Creating Textures
+
+* Create a png file inside your TexturePack folder with the name of the item you want to change.
+* You can see some examples on the [TexturePack] folder.
+
 ## Authors
 
 * Code: [Ignacio Zevallos](https://IgnacioZevallos.com/)
