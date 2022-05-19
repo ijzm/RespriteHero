@@ -4,13 +4,15 @@ using System.IO;
 using UnityEngine;
 
 namespace RespriteHero {
+
 	public class RespriteHero : MelonMod {
+		public static string TEXTURE_DIRECTORY = "/../ModConfig/RespriteHero/";
 		public override void OnApplicationLateStart() {
 			LoggerInstance.Msg("Texture Pack Mod Initialized");
 
-			string path = Application.dataPath + "/../TexturePack/";
+			string path = Application.dataPath + TEXTURE_DIRECTORY;
 			if (!Directory.Exists(path)) {
-				LoggerInstance.Msg("TexturePack folder doesn't exist. Creating one...");
+				LoggerInstance.Msg("ModConfig/RespriteHero folder doesn't exist. Creating one...");
 				Directory.CreateDirectory(path);
 			}
 		}
@@ -53,7 +55,7 @@ namespace RespriteHero {
 			name = name.Replace("variant", "");
 			name = name.Trim();
 
-			string filename = Application.dataPath + "/../TexturePack/" + name + ".png";
+			string filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + ".png";
 
 			if (File.Exists(filename)) {
 				MelonLogger.Msg($"Opening filename[{filename}]");

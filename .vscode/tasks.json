@@ -7,7 +7,7 @@
 			"type": "process",
 			"args": [
 				"build",
-				"${workspaceFolder}/ModTest/BackpackHeroMod.csproj",
+				"${workspaceFolder}/RespriteHero/RespriteHero.csproj",
 				"/property:GenerateFullPaths=true",
 				"/consoleloggerparameters:NoSummary"
 			],
@@ -37,7 +37,7 @@
 				"watch",
 				"run",
 				"--project",
-				"${workspaceFolder}/ModTest/BackpackHeroMod.csproj"
+				"${workspaceFolder}/ModTest/RespriteHero.csproj"
 			],
 			"problemMatcher": "$msCompile"
 		}

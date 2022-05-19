@@ -13,13 +13,13 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 
 * Install MelonLoader ([Guide](https://melonwiki.xyz))
 * Copy the RespriteHero.dll to your Mods folder, inside the game root folder.
-* Create a TexturePack folder in your game root folder.
-* Add any texture you want to the TexturePack folder!
+* Create a ModConfig/RespriteHero/ folder in your game root folder.
+* Add any texture you want to the ModConfig/RespriteHero/ folder!
 
 ### Creating Textures
 
-* Create a png file inside your TexturePack folder with the name of the item you want to change.
-* You can see some examples on the [TexturePack](/TexturePack) folder.
+* Create a png file inside your ModConfig/RespriteHero/ folder with the name of the item you want to change.
+* You can see some examples on the [ModConfig/RespriteHero](/ModConfig/RespriteHero) folder.
 
 ## Authors
 
@@ -27,6 +27,8 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 
 ## Version History
 
+* 0.1.1
+    * Change TexturePack folder to Modconfig/RespriteHero
 * 0.1.0
     * Initial Release
 
