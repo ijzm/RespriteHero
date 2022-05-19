@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MelonLoader;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -54,11 +55,32 @@ namespace RespriteHero {
 			name = name.Replace("Variant", "");
 			name = name.Replace("variant", "");
 			name = name.Trim();
+			string filename;
 
-			string filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + ".png";
+			ItemSpriteChanger itemSpriteChanger = __instance.GetComponent<ItemSpriteChanger>();
+			if (itemSpriteChanger != null) {
+				List<Sprite> sprites = typeof(ItemSpriteChanger).GetField(
+					"sprites",
+					System.Reflection.BindingFlags.NonPublic |
+					System.Reflection.BindingFlags.Instance
+				).GetValue(itemSpriteChanger) as List<Sprite>;
+
+				for (int i = 0; i < sprites.Count; i++) {
+					filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + "_" + i + ".png";
+					MelonLogger.Msg($"[ItemSpriteChanger]: Opening filename[{filename}]");
+					if (File.Exists(filename)) {
+						Sprite newSprite = RespriteHero.LoadPNG(filename);
+						sprites[i] = newSprite;
+					}
+				}
+
+				return;
+			}
+
+			filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + ".png";
 
 			if (File.Exists(filename)) {
-				MelonLogger.Msg($"Opening filename[{filename}]");
+				MelonLogger.Msg($"[SpriteRenderer]: Opening filename[{filename}]");
 				Sprite newSprite = RespriteHero.LoadPNG(filename);
 				SpriteRenderer spriteRenderer = __instance.gameObject.GetComponent<SpriteRenderer>();
 				spriteRenderer.sprite = newSprite;

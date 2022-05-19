@@ -26,15 +26,16 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 
 ## Version History
 
+* 0.2.0
+	* You can now change the textures of items that have charges. Just create the file [ItemName]_[ChargeNumber].png
 * 0.1.1
-    * Change TexturePack folder to Modconfig/RespriteHero
+	* Change TexturePack folder to ModConfig/RespriteHero
 * 0.1.0
-    * Initial Release
+	* Initial Release
 
 ## Known Bugs
 
 * While reorganizing your inventory, right clicking while dragging an item will stop selecting the item.
-* Items with charges (Meal, Waterskin, etc) won't change their texture.
 * Slowdown when instancing multiple items.
 
 ## License
@@ -44,6 +45,7 @@ This project is licensed under the GPL-3.0 License - see the LICENSE file for de
 ## Acknowledgments
 
 * LightPunch#8664 for the project name.
+* bk#9585 for helping figure out Reflection.
 * The Backpack Hero Team for creating an awesome game.
 * The Unofficial Backpack Hero Modding Discord for helping establishing a modding community.
 
