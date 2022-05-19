@@ -12,8 +12,7 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 ### Installing
 
 * Install MelonLoader ([Guide](https://melonwiki.xyz))
-* Copy the RespriteHero.dll to your Mods folder, inside the game root folder.
-* Create a ModConfig/RespriteHero/ folder in your game root folder.
+* Unzip the RespriteHero.zip inside the game folder. Make sure that Mods and ModConfig are in the root of the game folder.
 * Add any texture you want to the ModConfig/RespriteHero/ folder!
 
 ### Creating Textures
