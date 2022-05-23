@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "build",
+			"label": "Build Debug",
 			"command": "dotnet",
 			"type": "process",
 			"args": [
@@ -18,28 +18,22 @@
 			}
 		},
 		{
-			"label": "publish",
+			"label": "Build Release",
 			"command": "dotnet",
 			"type": "process",
 			"args": [
-				"publish",
-				"${workspaceFolder}/ModTest/BackpackHeroMod.csproj",
+				"build",
+				"${workspaceFolder}/RespriteHero/RespriteHero.csproj",
 				"/property:GenerateFullPaths=true",
-				"/consoleloggerparameters:NoSummary"
+				"/consoleloggerparameters:NoSummary",
+				"-c",
+				"Release"
 			],
-			"problemMatcher": "$msCompile"
-		},
-		{
-			"label": "watch",
-			"command": "dotnet",
-			"type": "process",
-			"args": [
-				"watch",
-				"run",
-				"--project",
-				"${workspaceFolder}/ModTest/RespriteHero.csproj"
-			],
-			"problemMatcher": "$msCompile"
+			"problemMatcher": "$msCompile",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }

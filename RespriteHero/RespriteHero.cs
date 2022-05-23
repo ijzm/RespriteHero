@@ -8,6 +8,12 @@ namespace RespriteHero {
 
 	public class RespriteHero : MelonMod {
 		public static string TEXTURE_DIRECTORY = "/../ModConfig/RespriteHero/";
+		//Cache of all the used sprites
+		public static Dictionary<string, Sprite> SPRITE_CACHE = new Dictionary<string, Sprite>();
+		//Cache of all unused sprites, so we don't have to call
+		//IO operations every time we want to use a sprite
+		public static List<string> UNUSED_CACHE = new List<string>();
+
 		public override void OnApplicationLateStart() {
 			LoggerInstance.Msg("Texture Pack Mod Initialized");
 
@@ -15,6 +21,17 @@ namespace RespriteHero {
 			if (!Directory.Exists(path)) {
 				LoggerInstance.Msg("ModConfig/RespriteHero folder doesn't exist. Creating one...");
 				Directory.CreateDirectory(path);
+			}
+		}
+
+		public static Sprite LoadPNGCache(string filePath) {
+			if (SPRITE_CACHE.ContainsKey(filePath)) {
+				return SPRITE_CACHE[filePath];
+			}
+			else {
+				Sprite sprite = LoadPNG(filePath);
+				SPRITE_CACHE.Add(filePath, sprite);
+				return sprite;
 			}
 		}
 
@@ -42,9 +59,9 @@ namespace RespriteHero {
 		}
 	}
 
-	//Every time an item is instantiated. Checks if the texture exists
-	//in the given path. If it does, creates the sprite and replaces
-	//the current sprite.
+	//Every time an item is instantiated:
+	//Checks if the sprite exists in the cache
+	//If not, check if the expr
 	//This is not very efficient. But performance doesn't matter in
 	//the current context
 	[HarmonyPatch(typeof(Item2), "Start")]
@@ -68,9 +85,13 @@ namespace RespriteHero {
 				for (int i = 0; i < sprites.Count; i++) {
 					filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + "_" + i + ".png";
 					MelonLogger.Msg($"[ItemSpriteChanger]: Opening filename[{filename}]");
-					if (File.Exists(filename)) {
-						Sprite newSprite = RespriteHero.LoadPNG(filename);
+
+					if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
+						Sprite newSprite = RespriteHero.LoadPNGCache(filename);
 						sprites[i] = newSprite;
+					}
+					else {
+						RespriteHero.UNUSED_CACHE.Add(filename);
 					}
 				}
 
@@ -79,11 +100,14 @@ namespace RespriteHero {
 
 			filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + ".png";
 
-			if (File.Exists(filename)) {
+			if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
 				MelonLogger.Msg($"[SpriteRenderer]: Opening filename[{filename}]");
-				Sprite newSprite = RespriteHero.LoadPNG(filename);
+				Sprite newSprite = RespriteHero.LoadPNGCache(filename);
 				SpriteRenderer spriteRenderer = __instance.gameObject.GetComponent<SpriteRenderer>();
 				spriteRenderer.sprite = newSprite;
+			}
+			else {
+				RespriteHero.UNUSED_CACHE.Add(filename);
 			}
 		}
 	}

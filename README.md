@@ -26,6 +26,8 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 
 ## Version History
 
+* 0.2.1
+	* Added a cache to hopefully improve performance and fix graphical errors.
 * 0.2.0
 	* You can now change the textures of items that have charges. Just create the file [ItemName]_[ChargeNumber].png
 * 0.1.1
