@@ -70,7 +70,7 @@ namespace RespriteHero {
 				tex,
 				new Rect(0, 0, tex.width, tex.height),
 				new Vector2(0.5f, 0.5f),
-				PPU, //Same value as Backpack Hero PPU
+				PPU, //Calculated value based on image dimensions and item size
 				0, 
 				SpriteMeshType.FullRect
 			);
