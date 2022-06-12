@@ -77,9 +77,6 @@
     <Reference Include="UnityEngine.Physics2DModule">
       <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="RespriteHero.cs" />
