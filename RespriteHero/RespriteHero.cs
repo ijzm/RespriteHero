@@ -3,6 +3,7 @@ using MelonLoader;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Linq;
 
 namespace RespriteHero {
 
@@ -24,22 +25,22 @@ namespace RespriteHero {
 			}
 		}
 
-		public static Sprite LoadPNGCache(string filePath, int[] gridNum) {
+		public static Sprite LoadPNGCache(string filePath, Item2 item) {
 			if (SPRITE_CACHE.ContainsKey(filePath)) {
 				return SPRITE_CACHE[filePath];
 			}
 			else {
-				Sprite sprite = LoadPNG(filePath, gridNum);
+				Sprite sprite = LoadPNG(filePath, item);
 				SPRITE_CACHE.Add(filePath, sprite);
 				return sprite;
 			}
 		}
 
-		public static Sprite LoadPNG(string filePath, int[] gridNum) {
+		public static Sprite LoadPNG(string filePath, Item2 item) {
 			Texture2D tex = null;
 			byte[] fileData;
 
-			float PPU = 16;
+			float PPU = 16f;
 
 			if (File.Exists(filePath)) {
 				fileData = File.ReadAllBytes(filePath);
@@ -50,27 +51,52 @@ namespace RespriteHero {
 				MelonLogger.Msg("NOT FOUND: " + filePath);
 			}
 
+			tex.filterMode = FilterMode.Point;
+
+			List<BoxCollider2D> boxColliders = item.transform.gameObject.GetComponentsInChildren<BoxCollider2D>().ToList<BoxCollider2D>();
+
+			int[] gridNum = new int[2] { 1, 1 };
+			gridNum = RespriteHero._BPTGetGridBounds(boxColliders, item);
+
 			if (tex.width > tex.height)
 				PPU = tex.width / gridNum[0];
 			else
 				PPU = tex.height / gridNum[1];
 
-			if (PPU % 16 >= 8)
-				PPU += 16 - (PPU % 16);
-			else if ((PPU % 16) != 0)
-				PPU -= PPU % 16;
+			MelonLogger.Msg("PPU1: " + PPU);
 
-			tex.filterMode = FilterMode.Point;
-			
+			if (PPU / 2 != 2)
+				PPU += PPU % 2;
+
+			MelonLogger.Msg("PPU2: " + PPU);
 
 			return Sprite.Create(
 				tex,
 				new Rect(0, 0, tex.width, tex.height),
 				new Vector2(0.5f, 0.5f),
-				16f, //Same value as Backpack Hero PPU
+				PPU, //Same value as Backpack Hero PPU
 				0, 
 				SpriteMeshType.FullRect
 			);
+		}
+
+		public static int[] _BPTGetGridBounds(List<BoxCollider2D> colliders, Item2 item) {
+			int[] gridNum = new int[2] { 1, 1 };
+			Vector2 max = new Vector2 { x = 0, y = 0 };
+			Vector2 min = new Vector2 { x = 0, y = 0 };
+			if (colliders.Count > 0) {
+				
+				foreach (BoxCollider2D collider in colliders) {
+					max.x = collider.bounds.max.x + collider.offset.x - item.gameObject.transform.position.x;
+					max.y = collider.bounds.max.y + collider.offset.y - item.gameObject.transform.position.y;
+					min.x = collider.bounds.min.x + collider.offset.x - item.gameObject.transform.position.x;
+					min.y = collider.bounds.min.y + collider.offset.y - item.gameObject.transform.position.y;
+				}
+			}
+			gridNum[0] = Mathf.RoundToInt(Mathf.Abs(max.x) + Mathf.Abs(min.x));
+			gridNum[1] = Mathf.RoundToInt(Mathf.Abs(max.y) + Mathf.Abs(min.y));
+
+			return gridNum;
 		}
 	}
 
@@ -102,23 +128,7 @@ namespace RespriteHero {
 					MelonLogger.Msg($"[ItemSpriteChanger]: Opening filename[{filename}]");
 
 					if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
-						BoxCollider2D[] boxColliders = __instance.gameObject.GetComponentsInChildren<BoxCollider2D>();
-						int[] gridNum = new int[2] { 1, 1 };
-						Vector2 max = new Vector2 { x = 0, y = 0 };
-						Vector2 min = new Vector2 { x = 0, y = 0 };
-						if (boxColliders.Length > 0) {
-							foreach (BoxCollider2D collider in boxColliders) {
-								max.x = collider.bounds.max.x + collider.offset.x - __instance.transform.parent.position.x;
-								max.y = collider.bounds.max.y + collider.offset.y - __instance.transform.parent.position.y;
-								min.x = collider.bounds.min.x + collider.offset.x - __instance.transform.parent.position.x;
-								min.y = collider.bounds.min.y + collider.offset.y - __instance.transform.parent.position.y;
-							}
-						}
-
-						gridNum[0] = Mathf.CeilToInt(Mathf.Abs(max.x) + Mathf.Abs(min.x));
-						gridNum[1] = Mathf.CeilToInt(Mathf.Abs(max.y) + Mathf.Abs(min.y));
-
-						Sprite newSprite = RespriteHero.LoadPNGCache(filename, gridNum);
+						Sprite newSprite = RespriteHero.LoadPNGCache(filename, __instance);
 						sprites[i] = newSprite;
 					}
 					else {
@@ -133,22 +143,7 @@ namespace RespriteHero {
 
 			if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
 				MelonLogger.Msg($"[SpriteRenderer]: Opening filename[{filename}]");
-				BoxCollider2D[] boxColliders = __instance.gameObject.GetComponentsInChildren<BoxCollider2D>();
-				int[] gridNum = new int[2] { 1, 1 };
-				Vector2 max = new Vector2 { x = 0, y = 0 };
-				Vector2 min = new Vector2 { x = 0, y = 0 };
-				if (boxColliders.Length > 0) {
-					foreach (BoxCollider2D collider in boxColliders) {
-						max.x = collider.bounds.max.x + collider.offset.x - __instance.transform.parent.position.x;
-						max.y = collider.bounds.max.y + collider.offset.y - __instance.transform.parent.position.y;
-						min.x = collider.bounds.min.x + collider.offset.x - __instance.transform.parent.position.x;
-						min.y = collider.bounds.min.y + collider.offset.y - __instance.transform.parent.position.y;
-					}
-				}
-
-				gridNum[0] = Mathf.CeilToInt(Mathf.Abs(max.x) + Mathf.Abs(min.x));
-				gridNum[1] = Mathf.CeilToInt(Mathf.Abs(max.y) + Mathf.Abs(min.y));
-				Sprite newSprite = RespriteHero.LoadPNGCache(filename, gridNum);
+				Sprite newSprite = RespriteHero.LoadPNGCache(filename, __instance);
 				SpriteRenderer spriteRenderer = __instance.gameObject.GetComponent<SpriteRenderer>();
 				spriteRenderer.sprite = newSprite;
 			}
