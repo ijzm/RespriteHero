@@ -23,9 +23,12 @@ A simple [Backpack Hero](https://store.steampowered.com/app/1970580/Backpack_Her
 ## Authors
 
 * Code: [Ignacio Zevallos](https://IgnacioZevallos.com/)
+* Code: Shirubaurufu
 
 ## Version History
 
+* 0.3.0
+	* Added support for multiple resolutions (Calculated automatically)
 * 0.2.1
 	* Added a cache to hopefully improve performance and fix graphical errors.
 * 0.2.0
@@ -48,6 +51,7 @@ This project is licensed under the GPL-3.0 License - see the LICENSE file for de
 
 * LightPunch#8664 for the project name.
 * bk#9585 for helping figure out Reflection.
+* Shirubaurufu#1337 for adding support for multiple resolutions.
 * The Backpack Hero Team for creating an awesome game.
 * The Unofficial Backpack Hero Modding Discord for helping establishing a modding community.
 

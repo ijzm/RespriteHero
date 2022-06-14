@@ -43,15 +43,15 @@
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\MelonLoader\0Harmony.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\MelonLoader\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MelonLoader">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\MelonLoader\MelonLoader.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\MelonLoader\MelonLoader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -59,23 +59,23 @@
     <Reference Include="System.Xml" />
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\..\..\..\..\..\Programs\Steam\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>E:\SteamLibrary\steamapps\common\Backpack Hero\Backpack Hero_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
