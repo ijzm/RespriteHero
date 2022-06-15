@@ -4,16 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace RespriteHero {
 
 	public class RespriteHero : MelonMod {
-		public static string TEXTURE_DIRECTORY = "/../ModConfig/RespriteHero/";
-		//Cache of all the used sprites
-		public static Dictionary<string, Sprite> SPRITE_CACHE = new Dictionary<string, Sprite>();
-		//Cache of all unused sprites, so we don't have to call
-		//IO operations every time we want to use a sprite
-		public static List<string> UNUSED_CACHE = new List<string>();
+		public static string TEXTURE_DIRECTORY = @"\ModConfig\RespriteHero\";
 
 		public override void OnApplicationLateStart() {
 			LoggerInstance.Msg("Texture Pack Mod Initialized");
@@ -22,17 +18,6 @@ namespace RespriteHero {
 			if (!Directory.Exists(path)) {
 				LoggerInstance.Msg("ModConfig/RespriteHero folder doesn't exist. Creating one...");
 				Directory.CreateDirectory(path);
-			}
-		}
-
-		public static Sprite LoadPNGCache(string filePath, Item2 item) {
-			if (SPRITE_CACHE.ContainsKey(filePath)) {
-				return SPRITE_CACHE[filePath];
-			}
-			else {
-				Sprite sprite = LoadPNG(filePath, item);
-				SPRITE_CACHE.Add(filePath, sprite);
-				return sprite;
 			}
 		}
 
@@ -98,30 +83,56 @@ namespace RespriteHero {
 		}
 
 		public override void OnApplicationStart() {
-			List<Item2> prefabs = Resources.FindObjectsOfTypeAll<Item2>().ToList<Item2>();
-			foreach (Item2 item2 in prefabs) {
-				GameObject item = item2.gameObject;
-				string baseName = item.name.Replace("(Clone)", "").Trim();
-				string filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + baseName.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() + ".png";
-				if (File.Exists(filename)) {
-					SpriteRenderer prefabRenderer = item.GetComponent<SpriteRenderer>();
-					if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
-						MelonLogger.Msg($"[SpriteRenderer]: Opening filename[{filename}]");
-						Sprite newSprite = RespriteHero.LoadPNGCache(filename, item2);
-						if (newSprite != null) {
-							prefabRenderer.sprite = newSprite;
-							prefabRenderer.material.mainTexture = newSprite.texture;
-						}
-						else {
-							MelonLogger.Msg("Sprite cannot be loaded");
+			UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoad;
+			base.OnApplicationStart();
+		}
+		void OnSceneLoad(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode scenemode) {
+			if (scene.name == "Game") {
+				List<GameObject> prefabs = GameObject.FindObjectOfType<GameManager>().defaultItems;
+				List<string> files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + TEXTURE_DIRECTORY).ToList<string>();
+				GameObject item = null;
+				foreach (string file in files) {
+					string[] split0 = file.Split(@"\".ToCharArray());
+					string itemName = split0[split0.Length - 1].Replace(".png", "").Trim();
+					if (file.Contains("_")) {
+						split0 = file.Split(@"\".ToCharArray());
+						string[] split1 = split0[split0.Length - 1].Split('_');
+						split1[1] = split1[1].Replace(".png", "").Trim();
+						itemName = split1[0];
+						item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() == itemName);
+						ItemSpriteChanger itemSpriteChanger = item.GetComponent<ItemSpriteChanger>();
+						if (itemSpriteChanger != null) {
+							List<Sprite> sprites = typeof(ItemSpriteChanger).GetField(
+								"sprites",
+								System.Reflection.BindingFlags.NonPublic |
+								System.Reflection.BindingFlags.Instance
+							).GetValue(itemSpriteChanger) as List<Sprite>;
+
+							Sprite newSprite = RespriteHero.LoadPNG(file, item.GetComponent<Item2>());
+							if (newSprite != null) {
+								int index;
+								if (int.TryParse(split1[1], out index)) {
+									sprites[index] = newSprite;
+									if (index == 0) {
+										item.GetComponent<SpriteRenderer>().sprite = newSprite;
+										item.GetComponent<SpriteRenderer>().material.mainTexture = newSprite.texture;
+									}
+								}
+							}
 						}
 					}
 					else {
-						RespriteHero.UNUSED_CACHE.Add(filename);
+						item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() == itemName);
+						if (item != null) {
+							Sprite newSprite = LoadPNG(file, item.GetComponent<Item2>());
+							if (newSprite != null) {
+								item.GetComponent<SpriteRenderer>().sprite = newSprite;
+								item.GetComponent<SpriteRenderer>().material.mainTexture = newSprite.texture;
+							}
+						}
 					}
 				}
 			}
-			base.OnApplicationStart();
 		}
 	}
 }
