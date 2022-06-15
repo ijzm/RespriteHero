@@ -39,7 +39,7 @@ namespace RespriteHero {
 		public static Sprite LoadPNG(string filePath, Item2 item) {
 			Texture2D tex = null;
 			byte[] fileData;
-
+			MelonLogger.Msg(item.gameObject);
 			float PPU = 16f;
 
 			if (File.Exists(filePath)) {
@@ -65,13 +65,15 @@ namespace RespriteHero {
 
 			if (PPU % 2 != 0)
 				PPU += 1;
+			else if (PPU == 0)
+				return null;
 
 			return Sprite.Create(
 				tex,
 				new Rect(0, 0, tex.width, tex.height),
 				new Vector2(0.5f, 0.5f),
 				PPU, //Calculated value based on image dimensions and item size
-				0, 
+				0,
 				SpriteMeshType.FullRect
 			);
 		}
@@ -81,71 +83,45 @@ namespace RespriteHero {
 			Vector2 max = new Vector2 { x = 0, y = 0 };
 			Vector2 min = new Vector2 { x = 0, y = 0 };
 			if (colliders.Count > 0) {
-				
 				foreach (BoxCollider2D collider in colliders) {
-					max.x = collider.bounds.max.x + collider.offset.x - item.gameObject.transform.position.x;
-					max.y = collider.bounds.max.y + collider.offset.y - item.gameObject.transform.position.y;
-					min.x = collider.bounds.min.x + collider.offset.x - item.gameObject.transform.position.x;
-					min.y = collider.bounds.min.y + collider.offset.y - item.gameObject.transform.position.y;
+					max.x = collider.size.x/2 + collider.offset.x - item.gameObject.transform.position.x;
+					max.y = collider.size.y/2 + collider.offset.y - item.gameObject.transform.position.y;
+					min.x = -collider.size.x/2 + collider.offset.x - item.gameObject.transform.position.x;
+					min.y = -collider.size.y/2 + collider.offset.y - item.gameObject.transform.position.y;
 				}
 			}
-			gridNum[0] = Mathf.RoundToInt(Mathf.Abs(max.x) + Mathf.Abs(min.x));
-			gridNum[1] = Mathf.RoundToInt(Mathf.Abs(max.y) + Mathf.Abs(min.y));
 
+			gridNum[0] = Mathf.RoundToInt(Mathf.Clamp(Mathf.Abs(max.x) + Mathf.Abs(min.x), 1, Mathf.Infinity));
+			gridNum[1] = Mathf.RoundToInt(Mathf.Clamp(Mathf.Abs(max.y) + Mathf.Abs(min.y), 1, Mathf.Infinity));
+			
 			return gridNum;
 		}
-	}
 
-	//Every time an item is instantiated:
-	//Checks if the sprite exists in the cache
-	//If not, check if the expr
-	//This is not very efficient. But performance doesn't matter in
-	//the current context
-	[HarmonyPatch(typeof(Item2), "Start")]
-	class Item2_Start_Patch {
-		static void Postfix(ref Item2 __instance) {
-			string name = __instance.gameObject.name;
-			name = name.Replace("(Clone)", "");
-			name = name.Replace("Variant", "");
-			name = name.Replace("variant", "");
-			name = name.Trim();
-			string filename;
-
-			ItemSpriteChanger itemSpriteChanger = __instance.GetComponent<ItemSpriteChanger>();
-			if (itemSpriteChanger != null) {
-				List<Sprite> sprites = typeof(ItemSpriteChanger).GetField(
-					"sprites",
-					System.Reflection.BindingFlags.NonPublic |
-					System.Reflection.BindingFlags.Instance
-				).GetValue(itemSpriteChanger) as List<Sprite>;
-
-				for (int i = 0; i < sprites.Count; i++) {
-					filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + "_" + i + ".png";
-					MelonLogger.Msg($"[ItemSpriteChanger]: Opening filename[{filename}]");
-
+		public override void OnApplicationStart() {
+			List<Item2> prefabs = Resources.FindObjectsOfTypeAll<Item2>().ToList<Item2>();
+			foreach (Item2 item2 in prefabs) {
+				GameObject item = item2.gameObject;
+				string baseName = item.name.Replace("(Clone)", "").Trim();
+				string filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + baseName.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() + ".png";
+				if (File.Exists(filename)) {
+					SpriteRenderer prefabRenderer = item.GetComponent<SpriteRenderer>();
 					if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
-						Sprite newSprite = RespriteHero.LoadPNGCache(filename, __instance);
-						sprites[i] = newSprite;
+						MelonLogger.Msg($"[SpriteRenderer]: Opening filename[{filename}]");
+						Sprite newSprite = RespriteHero.LoadPNGCache(filename, item2);
+						if (newSprite != null) {
+							prefabRenderer.sprite = newSprite;
+							prefabRenderer.material.mainTexture = newSprite.texture;
+						}
+						else {
+							MelonLogger.Msg("Sprite cannot be loaded");
+						}
 					}
 					else {
 						RespriteHero.UNUSED_CACHE.Add(filename);
 					}
 				}
-
-				return;
 			}
-
-			filename = Application.dataPath + RespriteHero.TEXTURE_DIRECTORY + name + ".png";
-
-			if (RespriteHero.SPRITE_CACHE.ContainsKey(filename) || File.Exists(filename)) {
-				MelonLogger.Msg($"[SpriteRenderer]: Opening filename[{filename}]");
-				Sprite newSprite = RespriteHero.LoadPNGCache(filename, __instance);
-				SpriteRenderer spriteRenderer = __instance.gameObject.GetComponent<SpriteRenderer>();
-				spriteRenderer.sprite = newSprite;
-			}
-			else {
-				RespriteHero.UNUSED_CACHE.Add(filename);
-			}
+			base.OnApplicationStart();
 		}
 	}
 }
