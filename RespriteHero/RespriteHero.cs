@@ -95,7 +95,10 @@ namespace RespriteHero {
 						string[] split1 = split0[split0.Length - 1].Split('_');
 						split1[1] = split1[1].Replace(".png", "").Trim();
 						itemName = split1[0];
-						item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() == itemName);
+						if (file.Contains("Variant"))
+							item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() + " Variant" == itemName);
+						else
+							item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() == itemName);
 						ItemSpriteChanger itemSpriteChanger = item.GetComponent<ItemSpriteChanger>();
 						if (itemSpriteChanger != null) {
 							List<Sprite> sprites = typeof(ItemSpriteChanger).GetField(
@@ -118,7 +121,10 @@ namespace RespriteHero {
 						}
 					}
 					else {
-						item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() == itemName);
+						if (file.Contains("Variant"))
+							item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() + " Variant" == itemName);
+						else
+							item = prefabs.Find(x => x.name.Replace("Variant", "").Replace("variant", "").Replace("1", "").Trim() == itemName);
 						if (item != null) {
 							Sprite newSprite = LoadPNG(file, item.GetComponent<Item2>());
 							if (newSprite != null) {
