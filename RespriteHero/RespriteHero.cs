@@ -13,7 +13,7 @@ namespace RespriteHero {
 
 		public override void OnApplicationLateStart() {
 			LoggerInstance.Msg("Texture Pack Mod Initialized");
-
+			UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoad;
 			string path = Application.dataPath + TEXTURE_DIRECTORY;
 			if (!Directory.Exists(path)) {
 				LoggerInstance.Msg("ModConfig/RespriteHero folder doesn't exist. Creating one...");
@@ -82,10 +82,6 @@ namespace RespriteHero {
 			return gridNum;
 		}
 
-		public override void OnApplicationStart() {
-			UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoad;
-			base.OnApplicationStart();
-		}
 		void OnSceneLoad(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode scenemode) {
 			if (scene.name == "Game") {
 				List<GameObject> prefabs = GameObject.FindObjectOfType<GameManager>().defaultItems;
